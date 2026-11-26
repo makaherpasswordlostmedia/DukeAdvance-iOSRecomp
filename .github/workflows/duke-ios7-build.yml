@@ -63,7 +63,11 @@ jobs:
           echo THEOS=$THEOS >> $GITHUB_ENV
       - name: Modern libc++ for armv7 / iOS 7 (C++20)
         working-directory: duke-ios7
-        run: bash ./build_libcxx.sh
+        run: |
+          bash ./build_libcxx.sh
+          # the toolchain ships its own libc++ headers (no __config_site) and the clang driver / Theos still searches them first:
+          # remove them so only libcxx-armv7/include/c++/v1 can ever be found
+          rm -rf "$THEOS/toolchain/linux/iphone/include/c++/v1"
       - name: Host test (division helpers)
         run: gcc -O2 -o /tmp/rt duke-ios7/tests/rt_shim_test.c && /tmp/rt
       - name: Prepare + build
