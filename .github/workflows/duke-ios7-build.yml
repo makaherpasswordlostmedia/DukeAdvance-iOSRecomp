@@ -16,6 +16,7 @@ jobs:
       - name: Unpack embedded iOS project (duke-ios7/)
         run: |
           sed -n '/^# ---- PAYLOAD/,$p' .github/workflows/duke-ios7-build.yml | sed '1d;s/^# //' | base64 -d | tar -xz
+          chmod +x duke-ios7/*.sh
           ls duke-ios7
       - name: Packages
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build python3 python3-pip git curl xz-utils bzip2 zip fakeroot
@@ -62,13 +63,13 @@ jobs:
           echo THEOS=$THEOS >> $GITHUB_ENV
       - name: Modern libc++ for armv7 / iOS 7 (C++20)
         working-directory: duke-ios7
-        run: ./build_libcxx.sh
+        run: bash ./build_libcxx.sh
       - name: Host test (division helpers)
         run: gcc -O2 -o /tmp/rt duke-ios7/tests/rt_shim_test.c && /tmp/rt
       - name: Prepare + build
         working-directory: duke-ios7
         run: |
-          FW=$GITHUB_WORKSPACE/../gbarecomp GEN=$GITHUB_WORKSPACE/generated ./prepare.sh
+          FW=$GITHUB_WORKSPACE/../gbarecomp GEN=$GITHUB_WORKSPACE/generated bash ./prepare.sh
           make package FINALPACKAGE=1 DUKE_OPT=1 V=1 2>&1 | tee ../build-theos.log | tail -80
       - name: Verify Mach-O
         working-directory: duke-ios7
