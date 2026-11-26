@@ -6,7 +6,7 @@ name: Duke Advance iOS 7 (armv7) build
 on: { workflow_dispatch: {} }
 env:
   ROM_SHA1: f01522ee46f5aa821adbba0a97b1a745ff9059f5
-  GBARECOMP_REF: 780ff64
+  GBARECOMP_REF: 62b6a94
 jobs:
   build:
     runs-on: ubuntu-24.04
